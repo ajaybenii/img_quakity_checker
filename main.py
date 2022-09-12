@@ -24,7 +24,7 @@ app = FastAPI(
 class URL(BaseModel):
     url_: str
  
-
+ 
 def extract_filename(URL):
     parsed = urlparse(URL)
     return os.path.basename(parsed.path)
@@ -95,7 +95,7 @@ async def image_quality_checker(URL1):
         try:
             img = cv2.imread("original_img."+format_, cv2.IMREAD_GRAYSCALE)
             laplacian_var = cv2.Laplacian(img, cv2.CV_64F).var()
-            print("sharpness try", laplacian_var)
+            print("laplacian try = ", laplacian_var)
 
             img_c = cv2.imread("original_img."+format_)
             Y = cv2.cvtColor(img_c, cv2.COLOR_BGR2YUV)[:,:,0]
@@ -198,16 +198,26 @@ async def image_quality_checker(URL1):
  
         return result
 
-    
+    # img = PIL.Image.open("q.jpg")
+
+    # fetching the dimensions
+    wid, hgt = image.size
+
+    # displaying the dimensions
+    print(str(wid) + "x" + str(hgt))
+
     result_check1 = calculate_sharpness(image)
     s2 = slice(0,6)
     
     buffer = BytesIO()
     image.save(buffer, format=format_)
     buffer.seek(0)
-
+    print("result_check1 =",result_check1)
     if result_check1 > 6:
+        print("result_check if =",result_check1)
         quality = 1
+    elif (str(wid) + "x" + str(hgt)) < (str(400) + "x" + str(400)):
+        quality = 0
     else:
         quality = 0
 
