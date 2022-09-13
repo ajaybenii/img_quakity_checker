@@ -105,22 +105,22 @@ async def image_quality_checker(URL1):
 
             # compute contrast
             contrast = (max-min)/(max+min)
-            print("try min=",min)
+            # print("try min=",min)
 
             img_s = cv2.imread("original_img."+format_)
             img_hsv = cv2.cvtColor(img_s, cv2.COLOR_BGR2HSV)
             saturation = img_hsv[:, :, 1].mean()
-            print("saturation try",saturation)
+            # print("saturation try",saturation)
 
         except:
             img_s = cv2.imread("original_img."+format_)
             img_hsv = cv2.cvtColor(img_s, cv2.COLOR_BGR2HSV)
             saturation = img_hsv[:, :, 1].mean()
-            print("saturation",saturation)
+            # print("saturation",saturation)
 
             img = cv2.imread("original_img."+format_, cv2.IMREAD_GRAYSCALE)
             laplacian_var = cv2.Laplacian(img, cv2.CV_64F).var()
-            print("lap except", laplacian_var)
+            # print("lap except", laplacian_var)
         
         if laplacian_var > 500:
             result = 10
@@ -194,7 +194,7 @@ async def image_quality_checker(URL1):
         if bright1 < 0.3:
             result = 3
 
-        print("rank =",result)
+        # print("rank =",result)
  
         return result
 
@@ -205,7 +205,7 @@ async def image_quality_checker(URL1):
 
     # displaying the dimensions
     print(str(wid) + "x" + str(hgt))
-
+    
     result_check1 = calculate_sharpness(image)
     s2 = slice(0,6)
     
@@ -213,14 +213,17 @@ async def image_quality_checker(URL1):
     image.save(buffer, format=format_)
     buffer.seek(0)
     print("result_check1 =",result_check1)
+    
     if result_check1 > 6:
-        print("result_check if =",result_check1)
+        # print("result_check if =",result_check1)
         quality = 1
-    elif (str(wid) + "x" + str(hgt)) < (str(400) + "x" + str(400)):
+        
+    if (str(wid) + "x" + str(hgt)) < (str(400) + "x" + str(400)):
         quality = 0
-    else:
+        
+    elif result_check1 < 6:
         quality = 0
-
+        
     return ({"quality":quality})
 
 # class URL1(BaseModel):
